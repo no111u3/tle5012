@@ -7,6 +7,7 @@ categories = [
     "no-std",
 ]
 authors = ["Boris Vinogradov <no111u3@gmail.com>"]
+description = "TLE5012 GMR angle sensor driver"
 edition = "2018"
 keywords = ["embedded-hal-driver", "angle-sensor", "GMR"]
 repository = "https://github.com/no111u3/tle5012"
