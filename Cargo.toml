@@ -8,7 +8,7 @@ categories = [
 ]
 authors = ["Boris Vinogradov <no111u3@gmail.com>"]
 edition = "2018"
-keywords = ["embedded-hal-driver", "angle magnetic sensor", "GMR"]
+keywords = ["embedded-hal-driver", "angle-magnetic-sensor", "GMR"]
 repository = "https://github.com/no111u3/tle5012"
 readme = "README.md"
 license = "Apache-2.0"
