@@ -1,7 +1,20 @@
 [package]
 name = "tle5012"
-version = "0.1.0"
+version = "0.0.1"
+categories = [
+    "embedded",
+    "hardware-support",
+    "no-std",
+]
 authors = ["Boris Vinogradov <no111u3@gmail.com>"]
 edition = "2018"
+keywords = ["embedded-hal-driver", "angle magnetic sensor", "GMR"]
+repository = "https://github.com/no111u3/tle5012"
+readme = "README.md"
+license = "Apache-2.0"
 
 [dependencies]
+
+[dependencies.embedded-hal]
+version = "0.2.2"
+features = ["unproven"]
