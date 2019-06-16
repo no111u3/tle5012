@@ -58,8 +58,8 @@ where
         
         self.cs.set_high().ok();
 
-        let data:u16 = (buffer[2] as u16) << 8 + buffer[3] as u16;
-        let safety:u16 = (buffer[4] as u16) << 8 + buffer[5] as u16;
+        let data:u16 = ((buffer[2] as u16) << 8) + buffer[3] as u16;
+        let safety:u16 = ((buffer[4] as u16) << 8) + buffer[5] as u16;
         
         self.check_safety(safety, &cmd, data)
     }
