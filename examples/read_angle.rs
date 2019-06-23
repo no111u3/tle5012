@@ -61,7 +61,14 @@ fn main() -> ! {
         Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
     }
 
-    asm::bkpt();
-
-    loop {}
+    loop {
+        match angle_sensor.read_angle_value() {
+            Ok(angle_value) => {
+                sprintln!(in_out, "Angle value is {}", angle_value);
+            }
+            Err(error) => {
+                sprintln!(in_out, "Error for read status is {:?}", error);
+            }
+        }
+    }
 }
