@@ -8,9 +8,14 @@
 extern crate panic_semihosting;
 
 use cortex_m::asm;
-use stm32f7x7_hal::{stm32, prelude::*, serial::{Serial, config}, spi::Spi};
-use serialio::{SerialIO, sprintln};
 use cortex_m_rt::entry;
+use serialio::{sprintln, SerialIO};
+use stm32f7x7_hal::{
+    prelude::*,
+    serial::{config, Serial},
+    spi::Spi,
+    stm32,
+};
 
 use tle5012::{self, Tle5012};
 
@@ -46,19 +51,36 @@ fn main() -> ! {
     let mut nss = gpioa.pa4.into_push_pull_output();
     nss.set_high();
 
-    let spi = Spi::spi1(p.SPI1, (sck, miso, mosi), tle5012::MODE, 500.khz().into(), clocks);
+    let spi = Spi::spi1(
+        p.SPI1,
+        (sck, miso, mosi),
+        tle5012::MODE,
+        500.khz().into(),
+        clocks,
+    );
 
     let mut angle_sensor = Tle5012::new(spi, nss).unwrap();
 
     match angle_sensor.read_status() {
-        Ok(status) => {sprintln!(in_out, "Angle sensor status is 0x{:x}", status);},
-        Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
+        Ok(status) => {
+            sprintln!(in_out, "Angle sensor status is 0x{:x}", status);
+        }
+        Err(error) => {
+            sprintln!(in_out, "Error for read status is {:?}", error);
+        }
     }
 
     match angle_sensor.read_activation_status() {
         Ok(activation_status) => {
-            sprintln!(in_out, "Angle sensor activation status is 0x{:x}", activation_status);},
-        Err(error) => {sprintln!(in_out, "Error for read status is {:?}", error);},
+            sprintln!(
+                in_out,
+                "Angle sensor activation status is 0x{:x}",
+                activation_status
+            );
+        }
+        Err(error) => {
+            sprintln!(in_out, "Error for read status is {:?}", error);
+        }
     }
 
     asm::bkpt();

@@ -10,7 +10,7 @@
 use embedded_hal::{
     blocking::spi::{Transfer, Write},
     digital::v2::OutputPin,
-    spi::{Mode, Phase, Polarity}
+    spi::{Mode, Phase, Polarity},
 };
 
 /// SPI mode
@@ -53,14 +53,14 @@ where
     /// Read angle value. Sensor return 15 bit signed integer
     pub fn read_angle_value(&mut self) -> Result<i16, Error<E>> {
         let tmp = self.read_register(ReadCmd::ANGLE_VAL_CMD)?;
-        
+
         Ok(self.from_i15_to_i16(tmp))
     }
 
     /// Read update angle value. Sensor return 15 bit signed integer
     pub fn read_update_angle_value(&mut self) -> Result<i16, Error<E>> {
         let tmp = self.read_register(ReadUpdCmd::ANGLE_VAL_CMD)?;
-        
+
         Ok(self.from_i15_to_i16(tmp))
     }
 
@@ -120,7 +120,7 @@ where
     pub fn read_sil(&mut self) -> Result<u16, Error<E>> {
         self.read_register(ReadCmd::SIL)
     }
-    
+
     pub fn read_int_mode_2(&mut self) -> Result<u16, Error<E>> {
         self.read_register(ReadCmd::INTMODE_2)
     }
@@ -155,25 +155,25 @@ where
 
     fn read_register<T>(&mut self, reg: T) -> Result<u16, Error<E>>
     where
-        T: Address
+        T: Address,
     {
         self.cs.set_low().ok();
-        
+
         let cmd = reg.addr().to_be_bytes();
-        let mut buffer:[u8; 2] = cmd;
+        let mut buffer: [u8; 2] = cmd;
 
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
-        
+
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
-        
-        let data:u16 = u16::from_be_bytes(buffer);
-        
+
+        let data: u16 = u16::from_be_bytes(buffer);
+
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
-        
-        let safety:u16 = u16::from_be_bytes(buffer);
-        
+
+        let safety: u16 = u16::from_be_bytes(buffer);
+
         self.cs.set_high().ok();
-        
+
         self.check_safety(safety, &cmd, data)
     }
 
@@ -223,25 +223,25 @@ where
 
     fn write_register<T>(&mut self, reg: T, data: u16) -> Result<bool, Error<E>>
     where
-        T: Address
+        T: Address,
     {
         self.cs.set_low().ok();
-        
+
         let cmd = reg.addr().to_be_bytes();
-        let mut buffer:[u8; 2] = cmd;
+        let mut buffer: [u8; 2] = cmd;
 
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
-        
+
         buffer = data.to_be_bytes();
-        
+
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
-        
+
         self.spi.transfer(&mut buffer).map_err(Error::Spi)?;
-        
-        let safety:u16 = u16::from_be_bytes(buffer);
-        
+
+        let safety: u16 = u16::from_be_bytes(buffer);
+
         self.cs.set_high().ok();
-        
+
         match self.check_safety(safety, &cmd, data) {
             Ok(_) => Ok(true),
             Err(e) => Err(e),
@@ -286,12 +286,12 @@ where
 
                 match self.calc_crc(&buffer, crc) {
                     Err(e) => Err(e),
-                    _ => Ok(data)
+                    _ => Ok(data),
                 }
             }
         }
     }
-    
+
     fn from_i15_to_i16(&mut self, val: u16) -> i16 {
         let tmp = val & DELETE_BIT_15;
 
@@ -314,23 +314,23 @@ where
 }
 
 /// Crc constants
-const CRC_SEED:u8 = 0xff;
-const CRC_POLYNOMIAL:u8 = 0x1d;
+const CRC_SEED: u8 = 0xff;
+const CRC_POLYNOMIAL: u8 = 0x1d;
 
 /// Error masks
-const SYSTEM_ERROR_MASK:u16 = 0x4000;
-const INTERFACE_ERROR_MASK:u16 = 0x2000;
-const INV_ANGLE_ERROR_MASK:u16 = 0x1000;
+const SYSTEM_ERROR_MASK: u16 = 0x4000;
+const INTERFACE_ERROR_MASK: u16 = 0x2000;
+const INV_ANGLE_ERROR_MASK: u16 = 0x1000;
 
 /// Values used to calculate 15 bit signed int sent by the sensor
-const DELETE_BIT_15:u16 = 0x7FFF;
-const CHANGE_UINT_TO_INT_15:u16 = 32768;
-const CHECK_BIT_14:u16 = 0x4000;
+const DELETE_BIT_15: u16 = 0x7FFF;
+const CHANGE_UINT_TO_INT_15: u16 = 32768;
+const CHECK_BIT_14: u16 = 0x4000;
 
 //values used to calculate 9 bit signed int sent by the sensor
-const DELETE_7BITS:u16 = 0x01FF;
-const CHANGE_UNIT_TO_INT_9:u16 = 512;
-const CHECK_BIT_9:u16 = 0x0100;
+const DELETE_7BITS: u16 = 0x01FF;
+const CHANGE_UNIT_TO_INT_9: u16 = 512;
+const CHECK_BIT_9: u16 = 0x0100;
 
 #[derive(Debug)]
 pub enum Error<E> {
@@ -343,7 +343,7 @@ pub enum Error<E> {
     /// Wrong CRC
     Crc,
     /// SPI bus error
-    Spi(E)
+    Spi(E),
 }
 
 trait Address {
